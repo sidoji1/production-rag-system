@@ -1,0 +1,22 @@
+[
+  {
+    "question": "What are the main challenges of RAG?",
+    "expected_pages": ["3", "14"]
+  },
+  {
+    "question": "What is Retrieval-Augmented Generation?",
+    "expected_pages": ["1"]
+  },
+  {
+    "question": "What are the different paradigms of RAG?",
+    "expected_pages": ["1", "2"]
+  },
+  {
+    "question": "What are the main components of a RAG framework?",
+    "expected_pages": ["1", "2"]
+  },
+  {
+    "question": "What are the challenges faced by Naive RAG?",
+    "expected_pages": ["3"]
+  }
+]

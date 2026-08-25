@@ -1,0 +1,30 @@
+# Virtual environment
+.venv/
+
+# Environment variables and secrets
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Logs
+logs/
+*.log
+
+# Pytest
+.pytest_cache/
+
+# Generated vector indexes
+data/*.index
+data/index/
+data/chroma/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated document metadata
+data/documents.json
