@@ -16,7 +16,6 @@ app = FastAPI(
 )
 
 
-# Allow local frontend and deployed Vercel frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -30,13 +29,12 @@ app.add_middleware(
 )
 
 
-# RAG pipeline is initialized only when the first query arrives
 rag_pipeline = None
 
 
 def get_rag_pipeline():
     """
-    Initialize the RAG pipeline only when it is first needed.
+    Lazily initialize the RAG pipeline.
     """
 
     global rag_pipeline
@@ -44,11 +42,20 @@ def get_rag_pipeline():
     if rag_pipeline is None:
         logger.info("Initializing RAG pipeline")
 
-        from src.rag_pipeline import RAGPipeline
+        try:
+            from src.rag_pipeline import RAGPipeline
 
-        rag_pipeline = RAGPipeline()
+            rag_pipeline = RAGPipeline()
 
-        logger.info("RAG pipeline initialized successfully")
+            logger.info(
+                "RAG pipeline initialized successfully"
+            )
+
+        except Exception:
+            logger.exception(
+                "Failed to initialize RAG pipeline"
+            )
+            raise
 
     return rag_pipeline
 
@@ -92,7 +99,11 @@ def query_rag(request: QueryRequest):
             "API query completed successfully"
         )
 
-        return result
+        return QueryResponse(
+            question=result["question"],
+            answer=result["answer"],
+            sources=result["sources"],
+        )
 
     except RAGException as exc:
         logger.error(
@@ -107,10 +118,8 @@ def query_rag(request: QueryRequest):
         ) from exc
 
     except Exception as exc:
-        logger.error(
-            "Unexpected API error: %s",
-            exc,
-            exc_info=True,
+        logger.exception(
+            "Unexpected API error"
         )
 
         raise HTTPException(
