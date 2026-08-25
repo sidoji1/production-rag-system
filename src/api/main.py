@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from src.api.schemas import QueryRequest, QueryResponse
 from src.utils.exceptions import RAGException
 from src.utils.logger import get_logger
-from fastapi.middleware.cors import CORSMiddleware
 
 
 logger = get_logger("api")
@@ -14,6 +15,8 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
+# Allow local frontend and deployed Vercel frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,6 +30,7 @@ app.add_middleware(
 )
 
 
+# RAG pipeline is initialized only when the first query arrives
 rag_pipeline = None
 
 
@@ -38,31 +42,16 @@ def get_rag_pipeline():
     global rag_pipeline
 
     if rag_pipeline is None:
-        logger.info(
-            "Initializing RAG pipeline"
-        )
+        logger.info("Initializing RAG pipeline")
+
         from src.rag_pipeline import RAGPipeline
+
         rag_pipeline = RAGPipeline()
 
-        logger.info(
-            "RAG pipeline initialized successfully"
-        )
+        logger.info("RAG pipeline initialized successfully")
 
     return rag_pipeline
 
-@app.on_event("startup")
-def initialize_rag_pipeline():
-    logger.info("Starting RAG pipeline initialization")
-
-    try:
-        get_rag_pipeline()
-        logger.info("RAG pipeline ready")
-    except Exception as exc:
-        logger.error(
-            "RAG pipeline initialization failed: %s",
-            exc,
-            exc_info=True,
-        )
 
 @app.get("/health")
 def health_check():
@@ -70,9 +59,7 @@ def health_check():
     Health check endpoint.
     """
 
-    logger.info(
-        "Health check requested"
-    )
+    logger.info("Health check requested")
 
     return {
         "status": "healthy",
