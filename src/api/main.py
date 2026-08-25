@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from src.api.schemas import QueryRequest, QueryResponse
 from src.utils.exceptions import RAGException
 from src.utils.logger import get_logger
+from fastapi.middleware.cors import CORSMiddleware
 
 
 logger = get_logger("api")
@@ -11,6 +12,17 @@ app = FastAPI(
     title="Production RAG API",
     description="Retrieval-Augmented Generation API",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

@@ -1,197 +1,367 @@
-# Production RAG System
+# RAG Explorer
 
-A production-oriented Retrieval-Augmented Generation (RAG) system built with Python, FAISS, sentence-transformer embeddings, Gemini, and FastAPI.
+A production-oriented Retrieval-Augmented Generation (RAG) system built with Python, FAISS, Sentence Transformers, Gemini, FastAPI, and React.
 
-The system loads a PDF knowledge base, chunks the documents, generates embeddings, stores them in FAISS, retrieves the most relevant chunks for a user query, and generates a grounded answer using Gemini.
+RAG Explorer allows users to ask questions about a PDF knowledge base through a web interface. The system retrieves relevant document chunks using semantic search and generates grounded answers using Gemini.
+
+---
+
+## Features
+
+- PDF document ingestion
+- Configurable text chunking
+- Sentence Transformer embeddings
+- FAISS vector similarity search
+- Top-K document retrieval
+- Gemini-powered answer generation
+- Grounded answers using retrieved context
+- Source page attribution
+- Similarity scores for retrieved documents
+- FastAPI REST API
+- React + Vite frontend
+- CORS support for frontend/backend communication
+- Input validation and error handling
+- Structured application logging
+- Automated unit and API tests
+- Retrieval evaluation
+- Answer generation evaluation
+- Retrieval Precision@K and Recall@K evaluation
+- Clean and minimal web interface
+
+---
 
 ## Architecture
 
 ```text
+                         RAG Explorer
+                              |
+                    React + Vite Frontend
+                              |
+                         FastAPI API
+                              |
+                         RAG Pipeline
+                              |
+                +-------------+-------------+
+                |                           |
+            Retriever                    Prompt
+                |                           |
+             FAISS                         |
+                |                           |
+       Relevant document chunks             |
+                +-------------+-------------+
+                              |
+                         Gemini LLM
+                              |
+                    Grounded Answer
+                              |
+                    Answer + Sources
+```
+
+---
+
+## RAG Pipeline
+
+```text
 PDF Document
-     ↓
+     |
+     v
 Document Loader
-     ↓
+     |
+     v
 Text Chunking
-     ↓
+     |
+     v
 Embedding Model
-     ↓
+     |
+     v
 FAISS Vector Index
-     ↓
+     |
+     v
 Retriever
-     ↓
+     |
+     v
 Top-K Relevant Chunks
-     ↓
+     |
+     v
 Prompt Construction
-     ↓
+     |
+     v
 Gemini LLM
-     ↓
+     |
+     v
 Grounded Answer + Sources
-     ↓
+     |
+     v
 FastAPI
+     |
+     v
+React + Vite
+```
 
-RAG-Production-Project/
-│
-├── data/
-│   └── Rag_llm.pdf
-│
-├── evaluation/
-│   ├── __init__.py
-│   ├── evaluate_answers.py
-│   ├── evaluate_faithfulness.py
-│   ├── evaluate_retrieval.py
-│   └── questions.json
-│
-├── src/
-│   ├── api/
-│   │   ├── main.py
-│   │   └── schemas.py
-│   │
-│   ├── chunking/
-│   │   └── chunker.py
-│   │
-│   ├── embeddings/
-│   │   └── embedder.py
-│   │
-│   ├── ingestion/
-│   │   ├── index.py
-│   │   └── loader.py
-│   │
-│   ├── llm/
-│   │   └── llm_client.py
-│   │
-│   ├── prompts/
-│   │   └── prompt_templates.py
-│   │
-│   ├── retrieval/
-│   │   └── retriever.py
-│   │
-│   ├── utils/
-│   │   ├── config.py
-│   │   ├── exceptions.py
-│   │   └── logger.py
-│   │
-│   ├── vectordb/
-│   │   └── vector_store.py
-│   │
-│   └── rag_pipeline.py
-│
-├── tests/
-│   ├── __init__.py
-│   ├── test_api.py
-│   ├── test_rag.py
-│   └── test_retriever.py
-│
-├── .env
-├── .gitignore
-├── config.yaml
-├── main.py
-├── requirements.txt
-├── README.md
-└── test_retrieval.py
+---
 
-## Technologies
+## Technology Stack
+
+### Backend
 
 - Python
 - FastAPI
 - FAISS
 - Sentence Transformers
+- LangChain
 - Gemini
+- PyPDF
+- PyYAML
+
+### Frontend
+
+- React
+- Vite
+- JavaScript
+- ESLint
+- CSS
+
+### Testing and Evaluation
+
 - Pytest
-- Uvicorn
+- Retrieval Hit Rate
+- Precision@K
+- Recall@K
+- Answer Generation Evaluation
+- Faithfulness Evaluation
 
-## RAG Pipeline
+---
 
-### 1. Document Ingestion
-
-The source PDF is loaded and processed into smaller document chunks.
-
-Current knowledge base:
-
-- 21 PDF pages
-- 136 chunks
-
-### 2. Embeddings
-
-Each document chunk is converted into a vector representation using the configured embedding model.
-
-Current embedding dimension:
+## Project Structure
 
 ```text
-384
+RAG-Production-Project/
+|
+|-- data/
+|   `-- Rag_llm.pdf
+|
+|-- evaluation/
+|   |-- __init__.py
+|   |-- evaluate_answers.py
+|   |-- evaluate_faithfulness.py
+|   |-- evaluate_retrieval.py
+|   `-- questions.json
+|
+|-- frontend/
+|   |-- public/
+|   |-- src/
+|   |   |-- App.jsx
+|   |   |-- App.css
+|   |   |-- index.css
+|   |   `-- main.jsx
+|   |-- eslint.config.js
+|   |-- index.html
+|   |-- package.json
+|   |-- package-lock.json
+|   `-- vite.config.js
+|
+|-- src/
+|   |-- api/
+|   |   |-- main.py
+|   |   `-- schemas.py
+|   |
+|   |-- chunking/
+|   |   `-- chunker.py
+|   |
+|   |-- embeddings/
+|   |   `-- embedder.py
+|   |
+|   |-- ingestion/
+|   |   |-- index.py
+|   |   `-- loader.py
+|   |
+|   |-- llm/
+|   |   `-- llm_client.py
+|   |
+|   |-- prompts/
+|   |   `-- prompt_templates.py
+|   |
+|   |-- retrieval/
+|   |   `-- retriever.py
+|   |
+|   |-- utils/
+|   |   |-- config.py
+|   |   |-- exceptions.py
+|   |   `-- logger.py
+|   |
+|   |-- vectordb/
+|   |   `-- vector_store.py
+|   |
+|   `-- rag_pipeline.py
+|
+|-- tests/
+|   |-- __init__.py
+|   |-- test_api.py
+|   |-- test_rag.py
+|   `-- test_retriever.py
+|
+|-- .env
+|-- .gitignore
+|-- config.yaml
+|-- main.py
+|-- requirements.txt
+`-- README.md
 ```
 
-### 3. Vector Database
+---
 
-FAISS is used for efficient vector similarity search.
+## Installation
 
-The generated FAISS index is stored locally and excluded from Git because it can be regenerated from the source document.
-
-### 4. Retrieval
-
-The retriever converts the user's question into an embedding and searches the FAISS index for relevant chunks.
-
-The current production configuration uses:
-
-```text
-Top K = 4
-```
-
-Top K was evaluated using values of 3, 4, and 5.
-
-| Top K | Average Precision | Average Recall |
-|------:|------------------:|---------------:|
-| 3 | 46.67% | 80.00% |
-| 4 | 45.00% | 100.00% |
-| 5 | 39.67% | 100.00% |
-
-Top K = 4 was selected because it maintains 100% recall while providing better precision than Top K = 5 and limiting the amount of context passed to the LLM.
-
-### 5. Generation
-
-The retrieved document chunks are passed to Gemini through the RAG prompt.
-
-The generated response contains the answer along with source page information and retrieval scores.
-
-## API
-
-The application exposes a FastAPI interface.
-
-Start the server:
+### 1. Clone the Repository
 
 ```bash
+git clone https://github.com/sidoji1/production-rag-system.git
+cd production-rag-system
+```
+
+### 2. Create a Python Virtual Environment
+
+On Windows:
+
+```powershell
+python -m venv .venv
+```
+
+Activate the environment:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install Python Dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key
+```
+
+Do not commit the `.env` file to GitHub.
+
+---
+
+# Running the Application
+
+The project uses two services:
+
+```text
+Backend  → FastAPI
+Frontend → React + Vite
+```
+
+Both services should be running during development.
+
+---
+
+## Running the Backend
+
+From the project root:
+
+```powershell
 uvicorn src.api.main:app --reload
 ```
 
-The API runs at:
+The backend will be available at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-### Interactive API Documentation
-
-FastAPI automatically provides Swagger documentation at:
+FastAPI interactive documentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-### Health Check
+---
+
+## Running the Frontend
+
+Open a second terminal.
+
+Navigate to the frontend:
+
+```powershell
+cd frontend
+```
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Start the development server:
+
+```powershell
+npm run dev
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Using RAG Explorer
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+Enter a question such as:
+
+```text
+What are the main challenges of RAG?
+```
+
+The application will:
+
+1. Send the question from React to FastAPI.
+2. Validate the request.
+3. Generate a query embedding.
+4. Search the FAISS vector index.
+5. Retrieve the most relevant document chunks.
+6. Construct the RAG prompt.
+7. Send the retrieved context to Gemini.
+8. Generate a grounded answer.
+9. Return the answer and source information.
+10. Display the answer and retrieved sources in the React interface.
+
+---
+
+# API
+
+## Health Check
 
 ```http
 GET /health
 ```
 
-Example response:
+Example:
 
-```json
-{
-  "status": "healthy",
-  "service": "rag-api"
-}
+```text
+http://127.0.0.1:8000/health
 ```
 
-### Query
+---
+
+## Query
 
 ```http
 POST /query
@@ -205,14 +375,7 @@ Request:
 }
 ```
 
-The response contains:
-
-- User question
-- Generated answer
-- Retrieved source pages
-- Retrieval scores
-
-Example structure:
+Example response:
 
 ```json
 {
@@ -222,305 +385,349 @@ Example structure:
     {
       "page": "1",
       "score": 0.7454
-    },
-    {
-      "page": "2",
-      "score": 0.7144
-    },
-    {
-      "page": "14",
-      "score": 0.7021
-    },
-    {
-      "page": "3",
-      "score": 0.6909
     }
   ]
 }
 ```
 
-## Validation and Error Handling
+---
 
-The API validates incoming questions.
-
-An empty question is rejected with a validation error.
-
-Example:
-
-```json
-{
-  "question": ""
-}
-```
-
-The API returns a validation response instead of processing an invalid request.
-
-The project also uses custom exceptions for RAG and retrieval failures.
-
-## Testing
-
-The project contains automated tests covering:
-
-- API health checks
-- API input validation
-- Successful API queries
-- RAG pipeline behavior
-- Empty-question handling
-- Retriever behavior
-- Retriever failure handling
+# Testing
 
 Run the complete test suite:
 
-```bash
+```powershell
 pytest -v
 ```
 
-Current result:
+Current test suite:
 
 ```text
 9 passed
 ```
 
-## Retrieval Evaluation
+The tests cover:
 
-Retrieval quality can be evaluated using:
+- API health check
+- Empty question validation
+- Missing question validation
+- Successful API query
+- Successful RAG pipeline execution
+- Empty RAG question handling
+- Retriever Top-K behavior
+- Empty retriever query handling
+- Retriever failure handling
 
-```bash
+---
+
+# Retrieval Evaluation
+
+Run:
+
+```powershell
 python -m evaluation.evaluate_retrieval
 ```
 
-The evaluation contains five questions with expected source pages.
+The retrieval evaluation tests multiple Top-K configurations and reports:
 
-Current baseline:
+- Retrieval Hit Rate
+- Precision@K
+- Recall@K
+
+Current evaluation results:
 
 ```text
 Retrieval Hit Rate: 100.00%
-Average Precision@4: 45.00%
 Average Recall@4: 100.00%
-Questions Evaluated: 5
 ```
 
-The evaluation questions and expected pages are defined in:
+Top-K configurations tested:
 
 ```text
-evaluation/questions.json
+Top-K = 3
+Top-K = 4
+Top-K = 5
 ```
 
-## Answer Evaluation
+---
 
-Generated answers can be evaluated using:
+# Answer Evaluation
 
-```bash
+Run:
+
+```powershell
 python -m evaluation.evaluate_answers
 ```
 
 The evaluation checks whether the RAG pipeline successfully generates answers for the evaluation questions.
 
-Current baseline:
+Current result:
 
 ```text
 Answer Generation Rate: 100.00%
 Questions Evaluated: 5
 ```
 
-## Faithfulness Evaluation
+---
 
-The project also includes a faithfulness evaluation script:
+# Example Questions
 
-```bash
-python -m evaluation.evaluate_faithfulness
-```
-
-This evaluates whether generated answers are supported by the retrieved context.
-
-Initial baseline:
+Try asking:
 
 ```text
-Faithfulness Score: 100.00%
-Questions Successfully Evaluated: 4/4
+What is Retrieval-Augmented Generation?
 ```
 
-One additional evaluation could not be completed because the Gemini API quota was exhausted during that run.
+```text
+What are the main challenges of RAG?
+```
 
-Therefore, this result should be treated as an initial baseline rather than a statistically significant benchmark.
+```text
+What are the different paradigms of RAG?
+```
 
-## Configuration
+```text
+What are the main components of a RAG framework?
+```
 
-Application configuration is stored in:
+```text
+What are the challenges faced by Naive RAG?
+```
+
+---
+
+# Retrieval Results
+
+The frontend displays the retrieved context used by the RAG pipeline.
+
+For each retrieved source, the interface displays:
+
+- Retrieval rank
+- Page number
+- Similarity score
+
+Example:
+
+```text
+01    PAGE 1     74.5%
+02    PAGE 2     71.4%
+03    PAGE 14    70.2%
+04    PAGE 3     69.1%
+```
+
+This provides visibility into which document chunks were retrieved before answer generation.
+
+---
+
+# Error Handling
+
+The system includes custom exception handling for:
+
+- Invalid questions
+- Empty queries
+- Retrieval failures
+- RAG pipeline failures
+- LLM generation failures
+- Invalid API requests
+
+The application also uses structured logging for easier debugging and monitoring.
+
+---
+
+# Configuration
+
+Project configuration is maintained through:
 
 ```text
 config.yaml
 ```
 
-Sensitive credentials such as the Gemini API key are stored in:
+Environment secrets such as the Gemini API key are stored separately in:
 
 ```text
 .env
 ```
 
-The `.env` file is excluded from Git.
+The `.env` file is excluded from Git version control through `.gitignore`.
 
-Do not commit API keys or other credentials to the repository.
+---
 
-## Environment Setup
+# Frontend
 
-Create a virtual environment:
+The frontend is built using React and Vite.
 
-```bash
-python -m venv .venv
-```
+The interface provides:
 
-Activate it on Windows PowerShell:
+- RAG Explorer branding
+- Minimal visual design
+- Question input
+- Suggested questions
+- Loading states
+- Grounded answer display
+- Source context display
+- Retrieval similarity scores
+- Error messages
+- Responsive layout
+- Ask another question functionality
 
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Create a `.env` file containing the required API credentials.
-
-## Build the Vector Index
-
-After adding or modifying the source documents, rebuild the FAISS index:
-
-```bash
-python -m src.ingestion.index
-```
-
-The indexing pipeline performs:
+The frontend communicates with the FastAPI backend through:
 
 ```text
-Load PDF
-   ↓
-Create Chunks
-   ↓
-Generate Embeddings
-   ↓
-Build FAISS Index
-   ↓
-Save Index
+POST http://127.0.0.1:8000/query
 ```
 
-Current indexing result:
+CORS is configured in the FastAPI application to allow local development from:
 
 ```text
-Pages loaded: 21
-Chunks created: 136
-Embedding dimension: 384
-FAISS vectors: 136
+http://localhost:5173
 ```
 
-## Running the Complete System
+and:
 
-### Terminal 1: Start the API
+```text
+http://127.0.0.1:5173
+```
+
+---
+
+# Development
+
+## Backend
+
+```text
+Python
+FastAPI
+FAISS
+Sentence Transformers
+Gemini
+LangChain
+```
+
+Run:
 
 ```powershell
 uvicorn src.api.main:app --reload
 ```
 
-### Terminal 2: Query the API
-
-```powershell
-Invoke-RestMethod `
-  -Uri "http://127.0.0.1:8000/query" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"question":"What are the main challenges of RAG?"}'
-```
-
-### Run Tests
-
-```powershell
-pytest -v
-```
-
-### Run Retrieval Evaluation
-
-```powershell
-python -m evaluation.evaluate_retrieval
-```
-
-## Logging
-
-The application uses centralized logging through the utility logging module.
-
-Logs are written to the local `logs/` directory.
-
-Log files are excluded from Git.
-
-## Security
-
-The project follows basic secret-management practices:
-
-- API keys are stored in `.env`
-- `.env` is excluded from Git
-- Virtual environments are excluded from Git
-- Generated indexes are excluded from Git
-- Python cache files are excluded from Git
-- Logs are excluded from Git
-
-## Production-Oriented Features
-
-The project includes:
-
-- Modular RAG architecture
-- PDF document ingestion
-- Configurable chunking
-- Embedding generation
-- FAISS vector search
-- Configurable Top K retrieval
-- Gemini LLM integration
-- Grounded answer generation
-- Source attribution
-- FastAPI REST API
-- Request validation
-- Custom exception handling
-- Centralized logging
-- Automated testing
-- Retrieval evaluation
-- Answer generation evaluation
-- Faithfulness evaluation
-- Environment-based secret management
-
-## Current Project Status
+## Frontend
 
 ```text
-Document ingestion        ✅
-Chunking                   ✅
-Embeddings                ✅
-FAISS indexing             ✅
-Retrieval                  ✅
-Gemini generation          ✅
-FastAPI                    ✅
-Input validation           ✅
-Logging                    ✅
-Exception handling         ✅
-Automated tests            ✅ 9/9
-Retrieval Hit Rate         ✅ 100%
-Recall@4                   ✅ 100%
-Precision@4                ⚠️ 45%
-Answer Generation Rate     ✅ 100%
-Faithfulness Baseline      ✅ 100% on 4/4 evaluated
-Top K                      ✅ 4
+React
+Vite
+JavaScript
+CSS
+ESLint
 ```
 
-## Future Improvements
+Run:
+
+```powershell
+cd frontend
+npm run dev
+```
+
+## Run Both Services
+
+### Terminal 1
+
+From the project root:
+
+```powershell
+.venv\Scripts\Activate.ps1
+uvicorn src.api.main:app --reload
+```
+
+### Terminal 2
+
+From the project root:
+
+```powershell
+cd frontend
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Evaluation Summary
+
+The current project has been tested at multiple levels.
+
+### Retrieval
+
+```text
+Hit Rate: 100.00%
+Recall@4: 100.00%
+```
+
+### Answer Generation
+
+```text
+Answer Generation Rate: 100.00%
+Questions Evaluated:    5
+```
+
+### Automated Tests
+
+```text
+9 passed
+```
+
+These evaluations provide separate checks for retrieval quality, answer generation, and application behavior.
+
+---
+
+# Project Status
+
+The project currently includes:
+
+- Production-oriented RAG backend
+- PDF knowledge base
+- Document loading
+- Text chunking
+- Sentence Transformer embeddings
+- FAISS vector search
+- Top-K retrieval
+- Gemini answer generation
+- Grounded responses
+- Source attribution
+- Similarity scores
+- FastAPI REST API
+- React + Vite frontend
+- CORS configuration
+- Error handling
+- Structured logging
+- Automated tests
+- Retrieval evaluation
+- Answer evaluation
+- Git version control
+
+---
+
+# Future Improvements
 
 Potential future improvements include:
 
-- Hybrid keyword + vector retrieval
-- Cross-encoder reranking
-- Query rewriting
-- Better chunking strategies
-- Larger evaluation datasets
-- Automated faithfulness benchmarking
+- Streaming LLM responses
+- Retrieval re-ranking
+- Hybrid keyword + semantic retrieval
+- Conversation history
+- Multiple document support
+- Document upload through the UI
+- Advanced faithfulness scoring
 - Response latency monitoring
-- Retrieval observability
-- Authentication and authorization
-- Containerized deployment
-- Cloud deployment
+- Authentication
+- Production deployment
+- Cloud hosting
+- Persistent vector database management
+
+---
+
+# License
+
+This project is intended for educational, portfolio, and demonstration purposes.
