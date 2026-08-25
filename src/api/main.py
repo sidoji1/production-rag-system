@@ -50,6 +50,19 @@ def get_rag_pipeline():
 
     return rag_pipeline
 
+@app.on_event("startup")
+def initialize_rag_pipeline():
+    logger.info("Starting RAG pipeline initialization")
+
+    try:
+        get_rag_pipeline()
+        logger.info("RAG pipeline ready")
+    except Exception as exc:
+        logger.error(
+            "RAG pipeline initialization failed: %s",
+            exc,
+            exc_info=True,
+        )
 
 @app.get("/health")
 def health_check():
